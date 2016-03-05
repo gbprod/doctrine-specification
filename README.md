@@ -13,17 +13,17 @@ You can write specifications using [gbprod/specification](https://github.com/gbp
 ```php
 namespace GBProd\Acme\Doctrine\SpecificationHandler;
 
-use GBProd\DoctrineSpecification\Filter\Filter;
+use GBProd\DoctrineSpecification\QueryModifier\Modifier;
 use GBProd\Specification\Specification;
 use Doctrine\ORM\QueryBuilder;
 
-class IsAvailableSpecificationFilter implements Handler
+class IsAvailableSpecificationModifier implements Modifier
 {
-    public function filter(Specification $spec, QueryBuilder $qb, $alias)
+    public function filter(Specification $spec, QueryBuilder $qb)
     {
         return $qb
-            ->where($alias.'.available = 0')
-            ->andWhere($alias'.limitDate < :now')
+            ->where('available = 0')
+            ->andWhere('limitDate < :now')
             ->setParameter('now', new \DateTime())
         ;
     }
@@ -34,13 +34,13 @@ class IsAvailableSpecificationFilter implements Handler
 
 ```php
 $handler = new GBProd\DoctrineSpecification\Handler();
-$handler->registerFilter(
-    IsAvailable::class, // Specification full qualified classname 
-    new IsAvailableSpecificationFilter() 
+$handler->registerModifier(
+    IsAvailable::class, // Specification full qualified classname
+    new IsAvailableSpecificationModifier()
 );
-$handler->registerFilter(
-    StockGreaterThan::class, // Specification full qualified classname 
-    new StockGreaterThanSpecificationFilter() 
+$handler->registerModifier(
+    StockGreaterThan::class, // Specification full qualified classname
+    new StockGreaterThanSpecificationModifier()
 );
 ```
 
