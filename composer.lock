@@ -192,16 +192,16 @@
         },
         {
             "name": "gbprod/specification",
-            "version": "v0.1.1",
+            "version": "v0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gbprod/specification.git",
-                "reference": "7d89e4173d4e6b3ff814e20446cf4c71964eb549"
+                "reference": "247727f5a278066e674bd5ff928921fdbeb4cbee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gbprod/specification/zipball/7d89e4173d4e6b3ff814e20446cf4c71964eb549",
-                "reference": "7d89e4173d4e6b3ff814e20446cf4c71964eb549",
+                "url": "https://api.github.com/repos/gbprod/specification/zipball/247727f5a278066e674bd5ff928921fdbeb4cbee",
+                "reference": "247727f5a278066e674bd5ff928921fdbeb4cbee",
                 "shasum": ""
             },
             "require-dev": {
@@ -226,7 +226,7 @@
                 }
             ],
             "description": "Yet another specification pattern implementation",
-            "time": "2016-03-03 19:35:49"
+            "time": "2016-03-05 10:06:07"
         }
     ],
     "packages-dev": [

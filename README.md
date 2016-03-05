@@ -13,7 +13,7 @@ You can write specifications using [gbprod/specification](https://github.com/gbp
 ```php
 namespace GBProd\Acme\Doctrine\SpecificationHandler;
 
-use GBProd\DoctrineSpecification\Filter;
+use GBProd\DoctrineSpecification\Filter\Filter;
 use GBProd\Specification\Specification;
 use Doctrine\ORM\QueryBuilder;
 
