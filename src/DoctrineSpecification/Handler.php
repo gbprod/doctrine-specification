@@ -3,7 +3,13 @@
 namespace GBProd\DoctrineSpecification;
 
 use Doctrine\ORM\QueryBuilder;
-use GBProd\DoctrineSpecification\QueryModifier\Modifier;
+use GBProd\DoctrineSpecification\ExpressionBuilder\AndXBuilder;
+use GBProd\DoctrineSpecification\ExpressionBuilder\Builder;
+use GBProd\DoctrineSpecification\ExpressionBuilder\NotBuilder;
+use GBProd\DoctrineSpecification\ExpressionBuilder\OrXBuilder;
+use GBProd\Specification\AndX;
+use GBProd\Specification\Not;
+use GBProd\Specification\OrX;
 use GBProd\Specification\Specification;
 
 /**
@@ -14,9 +20,21 @@ use GBProd\Specification\Specification;
 class Handler
 {
     /**
-     * @param array<Modifier>
+     * @param Registry
      */
-    private $modifiers = array();
+    private $registry;
+
+    /**
+     * @param Registry $registry
+     */
+    public function __construct(Registry $registry)
+    {
+        $this->registry = $registry;
+
+        $this->registry->register(AndX::class, new AndXBuilder($registry));
+        $this->registry->register(OrX::class, new OrXBuilder($registry));
+        $this->registry->register(Not::class, new NotBuilder($registry));
+    }
 
     /**
      * handle specification for querybuilder
@@ -28,33 +46,23 @@ class Handler
      */
     public function handle(Specification $spec, QueryBuilder $qb)
     {
-        $modifier = $this->getModifierForSpecification($spec);
+        $builder = $this->registry->getBuilder($spec);
 
-        $modifier->modify($spec, $qb);
-    }
+        $qb->where(
+            $builder->build($spec, $qb)
+        );
 
-    private function getModifierForSpecification(Specification $spec)
-    {
-        if (!isset($this->modifiers[get_class($spec)])) {
-            throw new \OutOfRangeException(
-                sprintf(
-                    'Modifier for "%s" specification not found',
-                    get_class($spec)
-                )
-            );
-        }
-
-        return $this->modifiers[get_class($spec)];
+        return $qb->getQuery()->getResult();
     }
 
     /**
      * Register a modifier for specification
      *
      * @param string $classname specification fully qualified classname
-     * @param Modifier $modifier
+     * @param Modifier $builder
      */
-    public function registerModifier($classname, Modifier $modifier)
+    public function registerBuilder($classname, Builder $builder)
     {
-        $this->modifiers[$classname] = $modifier;
+        $this->registry->register($classname, $builder);
     }
 }

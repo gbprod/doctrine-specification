@@ -13,20 +13,21 @@ You can write specifications using [gbprod/specification](https://github.com/gbp
 ### Creates a doctrine specification filter
 
 ```php
-namespace GBProd\Acme\Doctrine\SpecificationHandler;
+namespace GBProd\Acme\Doctrine\SpecificationBuilder;
 
-use GBProd\DoctrineSpecification\QueryModifier\Modifier;
+use GBProd\DoctrineSpecification\ExpressionBuilder\Builder;
 use GBProd\Specification\Specification;
 use Doctrine\ORM\QueryBuilder;
 
-class IsAvailableSpecificationModifier implements Modifier
+class IsAvailableBuilder implements Builder
 {
     public function filter(Specification $spec, QueryBuilder $qb)
     {
-        return $qb
-            ->where('available = 0')
-            ->andWhere('limitDate < :now')
-            ->setParameter('now', new \DateTime())
+        return $qb->expr()
+            ->andx(
+                $qb->expr()->eq('available', "0"),
+                $qb->expr()->gt('limitDate', "2016-03-05 00:00:00"),
+            )
         ;
     }
 }
@@ -35,15 +36,11 @@ class IsAvailableSpecificationModifier implements Modifier
 ### Configure
 
 ```php
-$handler = new GBProd\DoctrineSpecification\Handler();
-$handler->registerModifier(
-    IsAvailable::class, // Specification full qualified classname
-    new IsAvailableSpecificationModifier()
-);
-$handler->registerModifier(
-    StockGreaterThan::class, // Specification full qualified classname
-    new StockGreaterThanSpecificationModifier()
-);
+$registry = new GBProd\DoctrineSpecification\Registry();
+
+$handler = new GBProd\DoctrineSpecification\Handler($registry);
+$handler->registerBuilder(IsAvailable::class, new IsAvailableBuilder());
+$handler->registerBuilder(StockGreaterThan::class, new StockGreaterThanBuilder());
 ```
 
 ### Use it

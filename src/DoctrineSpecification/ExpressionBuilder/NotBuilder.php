@@ -1,0 +1,24 @@
+<?php
+
+namespace GBProd\DoctrineSpecification\ExpressionBuilder;
+
+use GBProd\DoctrineSpecification\Registry;
+use GBProd\Specification\Specification;
+use Doctrine\ORM\QueryBuilder;
+
+class NotBuilder implements Builder
+{
+    private $registry;
+
+    public function __construct(Registry $registry)
+    {
+        $this->registry = $registry;
+    }
+
+    public function build(Specification $spec, QueryBuilder $qb)
+    {
+        return $qb->expr()->not(
+            $this->registry->getBuilder($spec->getWrappedSpecification())->build($spec->getWrappedSpecification(), $qb)
+        );
+    }
+}
