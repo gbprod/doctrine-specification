@@ -6,15 +6,29 @@ use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\Specification;
 use Doctrine\ORM\QueryBuilder;
 
+/**
+ * Expression Builder for OrX specification
+ *
+ * @author gbprod <contact@gb-prod.fr>
+ */
 class OrXBuilder implements Builder
 {
+    /**
+     * @var Registry
+     */
     private $registry;
 
+    /**
+     * @param Registry $registry
+     */
     public function __construct(Registry $registry)
     {
         $this->registry = $registry;
     }
 
+    /**
+     * {inheritdoc}
+     */
     public function build(Specification $spec, QueryBuilder $qb)
     {
         return $qb->expr()->orx(

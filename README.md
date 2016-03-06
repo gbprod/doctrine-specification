@@ -21,7 +21,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class IsAvailableBuilder implements Builder
 {
-    public function filter(Specification $spec, QueryBuilder $qb)
+    public function build(Specification $spec, QueryBuilder $qb)
     {
         return $qb->expr()
             ->andx(
@@ -56,7 +56,7 @@ $availableWithLowStock = $available
 ;
 
 $qb = $this->em
-    ->getRepository('GBProd\Acme\Product\Product')
+    ->getRepository('GBProd\Acme\CoreDomain\Product\Product')
     ->createQueryBuilder('p')
 ;
 
