@@ -6,9 +6,9 @@ php:
 
 before_script:
     - composer self-update
+    - composer require doctrine/orm:${DOCTRINE_VERSION}
     - composer install --no-interaction --prefer-source --dev
     - mkdir -p build/logs
-    - composer require doctrine/orm:${DOCTRINE_VERSION}
 
 env:
     - DOCTRINE_VERSION=2.2.*
