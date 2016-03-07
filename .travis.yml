@@ -4,12 +4,6 @@ php:
     - '5.6'
     - '7.0'
 
-before_script:
-    - composer self-update
-    - composer require doctrine/orm:${DOCTRINE_VERSION}
-    - composer install --no-interaction --prefer-source --dev
-    - mkdir -p build/logs
-
 env:
     - DOCTRINE_VERSION=2.2.*
     - DOCTRINE_VERSION=2.3.*
@@ -18,6 +12,11 @@ env:
     - DOCTRINE_VERSION=dev-master
 
 before_script:
+    - composer self-update
+    - composer require doctrine/orm:${DOCTRINE_VERSION} --no-update
+    - composer install --no-interaction --prefer-source --dev
+    - mkdir -p build/logs
+
 
 script:
     - vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
