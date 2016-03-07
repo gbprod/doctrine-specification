@@ -14,7 +14,7 @@ env:
 before_script:
     - composer self-update
     - composer require doctrine/orm:${DOCTRINE_VERSION} --no-update
-    - composer install --no-interaction --prefer-source --dev
+    - composer update --no-interaction --prefer-source --dev
     - mkdir -p build/logs
 
 
