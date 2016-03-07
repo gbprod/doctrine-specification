@@ -1,17 +1,26 @@
 language: php
 php:
-  - '5.5'
-  - '5.6'
-  - '7.0'
-  
+    - '5.5'
+    - '5.6'
+    - '7.0'
+
 before_script:
     - composer self-update
     - composer install --no-interaction --prefer-source --dev
     - mkdir -p build/logs
+    - composer require doctrine/orm:${DOCTRINE_VERSION}
 
-script: 
+env:
+    - DOCTRINE_VERSION=2.2.*
+    - DOCTRINE_VERSION=2.3.*
+    - DOCTRINE_VERSION=2.4.*
+    - DOCTRINE_VERSION=2.5.*
+    - DOCTRINE_VERSION=dev-master
+
+before_script:
+
+script:
     - vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
-    
+
 after_success:
     - travis_retry php vendor/bin/coveralls -v
-  
