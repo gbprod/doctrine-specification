@@ -42,7 +42,7 @@ class Handler
      * @param Specification $spec
      * @param QueryBuilder  $qb
      *
-     * @return QueryBuilder
+     * @return array
      */
     public function handle(Specification $spec, QueryBuilder $qb)
     {
@@ -56,10 +56,10 @@ class Handler
     }
 
     /**
-     * Register a modifier for specification
+     * Register a builder for specification
      *
-     * @param string $classname specification fully qualified classname
-     * @param Modifier $builder
+     * @param string  $classname specification fully qualified classname
+     * @param Builder $builder
      */
     public function registerBuilder($classname, Builder $builder)
     {
