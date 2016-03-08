@@ -3,6 +3,7 @@
 namespace GBProd\DoctrineSpecification\ExpressionBuilder;
 
 use GBProd\DoctrineSpecification\Registry;
+use GBProd\Specification\OrX;
 use GBProd\Specification\Specification;
 use Doctrine\ORM\QueryBuilder;
 
@@ -31,6 +32,10 @@ class OrXBuilder implements Builder
      */
     public function build(Specification $spec, QueryBuilder $qb)
     {
+        if (!$spec instanceof OrX) {
+            throw new \InvalidArgumentException();
+        }
+
         return $qb->expr()->orx(
             $this->registry->getBuilder($spec->getFirstPart())->build($spec->getFirstPart(), $qb),
             $this->registry->getBuilder($spec->getSecondPart())->build($spec->getSecondPart(), $qb)

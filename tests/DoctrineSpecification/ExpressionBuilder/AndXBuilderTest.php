@@ -61,4 +61,15 @@ class AndXBuilderTest extends \PHPUnit_Framework_TestCase
 
         return $qb;
     }
+
+    public function testBuildThrowExceptionIfNotAndXSpecification()
+    {
+        $spec = $this->getMock(Specification::class);
+        $registry = new Registry();
+        $builder = new AndXBuilder($registry);
+
+        $this->setExpectedException('\InvalidArgumentException');
+
+        $expr = $builder->build($spec, $this->getQueryBuilder());
+    }
 }

@@ -53,4 +53,15 @@ class NotBuilderTest extends \PHPUnit_Framework_TestCase
 
         return $qb;
     }
+
+    public function testBuildThrowExceptionIfNotNotSpecification()
+    {
+        $spec = $this->getMock(Specification::class);
+        $registry = new Registry();
+        $builder = new NotBuilder($registry);
+
+        $this->setExpectedException('\InvalidArgumentException');
+
+        $expr = $builder->build($spec, $this->getQueryBuilder());
+    }
 }

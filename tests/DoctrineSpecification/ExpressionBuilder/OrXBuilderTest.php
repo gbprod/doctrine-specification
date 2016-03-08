@@ -61,4 +61,15 @@ class OrXBuilderTest extends \PHPUnit_Framework_TestCase
 
         return $qb;
     }
+
+    public function testBuildThrowExceptionIfNotOrXSpecification()
+    {
+        $spec = $this->getMock(Specification::class);
+        $registry = new Registry();
+        $builder = new OrXBuilder($registry);
+
+        $this->setExpectedException('\InvalidArgumentException');
+
+        $expr = $builder->build($spec, $this->getQueryBuilder());
+    }
 }
