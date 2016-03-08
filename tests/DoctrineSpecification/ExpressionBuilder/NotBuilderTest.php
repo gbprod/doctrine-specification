@@ -2,12 +2,13 @@
 
 namespace Tests\GBProd\DoctrineSpecification;
 
-use GBProd\DoctrineSpecification\ExpressionBuilder\NotBuilder;
-use GBProd\DoctrineSpecification\ExpressionBuilder\Builder;
-use GBProd\DoctrineSpecification\Registry;
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Query\Expr\Func as ExprNot;
 use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\Query\Expr\Comparison;
+use Doctrine\ORM\Query\Expr\Func as ExprNot;
+use Doctrine\ORM\QueryBuilder;
+use GBProd\DoctrineSpecification\ExpressionBuilder\Builder;
+use GBProd\DoctrineSpecification\ExpressionBuilder\NotBuilder;
+use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\Not;
 use GBProd\Specification\Specification;
 
@@ -40,7 +41,8 @@ class NotBuilderTest extends \PHPUnit_Framework_TestCase
 
     private function getQueryBuilder()
     {
-        $qb = $this->getMockBuilder(QueryBuilder::class)
+        $qb = $this
+            ->getMockBuilder(QueryBuilder::class)
             ->disableOriginalConstructor()
             ->getMock()
         ;
@@ -63,5 +65,34 @@ class NotBuilderTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('\InvalidArgumentException');
 
         $expr = $builder->build($spec, $this->getQueryBuilder());
+    }
+
+    public function testBuildReturnsOrxExpressionWithBuildedParts()
+    {
+        $not = new Not($this->getMock(Specification::class));
+
+        $registry = new Registry();
+        $registry->register(
+            get_class($not->getWrappedSpecification()),
+            $this->getMock(Builder::class)
+        );
+
+        $qb = $this->getQueryBuilder();
+
+        $exprFirstPart = new Comparison('4', '=', '4');
+
+        $registry
+            ->getBuilder($not->getWrappedSpecification())
+            ->expects($this->any())
+            ->method('build')
+            ->with($not->getWrappedSpecification(), $qb)
+            ->willReturn($exprFirstPart)
+        ;
+
+        $builder = new NotBuilder($registry);
+
+        $expr = $builder->build($not, $qb);
+
+        $this->assertEquals($exprFirstPart, $expr->getArguments()[0]);
     }
 }

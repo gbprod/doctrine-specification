@@ -36,8 +36,10 @@ class NotBuilder implements Builder
             throw new \InvalidArgumentException();
         }
 
+        $builder = $this->registry->getBuilder($spec->getWrappedSpecification());
+
         return $qb->expr()->not(
-            $this->registry->getBuilder($spec->getWrappedSpecification())->build($spec->getWrappedSpecification(), $qb)
+            $builder->build($spec->getWrappedSpecification(), $qb)
         );
     }
 }
