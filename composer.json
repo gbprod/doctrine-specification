@@ -3,7 +3,7 @@
     "description": "This library allows you to write Doctrine ORM queries using the specification pattern",
     "type": "library",
     "require": {
-        "doctrine/orm": ">=2.2",
+        "doctrine/orm": "^2.3|^2.5",
         "gbprod/specification": ">=0.1"
     },
     "require-dev": {
