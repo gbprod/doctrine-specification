@@ -7,8 +7,7 @@
         "gbprod/specification": ">=0.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.*",
-        "satooshi/php-coveralls": "^1.0"
+        "phpunit/phpunit": "4.*"
     },
     "license": "MIT",
     "authors": [

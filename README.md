@@ -1,8 +1,13 @@
 # Doctrine specification
 
-[![Build Status](https://travis-ci.org/gbprod/doctrine-specification.svg?branch=master)](https://travis-ci.org/gbprod/doctrine-specification) [![Coverage Status](https://coveralls.io/repos/github/gbprod/doctrine-specification/badge.svg?branch=master)](https://coveralls.io/github/gbprod/doctrine-specification?branch=master) [![Code Climate](https://codeclimate.com/github/gbprod/doctrine-specification/badges/gpa.svg)](https://codeclimate.com/github/gbprod/doctrine-specification) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/gbprod/doctrine-specification/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/gbprod/doctrine-specification/?branch=master)
+[![Build Status](https://travis-ci.org/gbprod/doctrine-specification.svg?branch=master)](https://travis-ci.org/gbprod/doctrine-specification)
+[![Code Coverage](https://scrutinizer-ci.com/g/gbprod/doctrine-specification/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/gbprod/doctrine-specification/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/gbprod/doctrine-specification/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/gbprod/doctrine-specification/?branch=master)
 
-[![Latest Stable Version](https://poser.pugx.org/gbprod/doctrine-specification/v/stable)](https://packagist.org/packages/gbprod/doctrine-specification) [![Total Downloads](https://poser.pugx.org/gbprod/doctrine-specification/downloads)](https://packagist.org/packages/gbprod/doctrine-specification) [![Latest Unstable Version](https://poser.pugx.org/gbprod/doctrine-specification/v/unstable)](https://packagist.org/packages/gbprod/doctrine-specification) [![License](https://poser.pugx.org/gbprod/doctrine-specification/license)](https://packagist.org/packages/gbprod/doctrine-specification)
+[![Latest Stable Version](https://poser.pugx.org/gbprod/doctrine-specification/v/stable)](https://packagist.org/packages/gbprod/doctrine-specification)
+[![Total Downloads](https://poser.pugx.org/gbprod/doctrine-specification/downloads)](https://packagist.org/packages/gbprod/doctrine-specification)
+[![Latest Unstable Version](https://poser.pugx.org/gbprod/doctrine-specification/v/unstable)](https://packagist.org/packages/gbprod/doctrine-specification)
+[![License](https://poser.pugx.org/gbprod/doctrine-specification/license)](https://packagist.org/packages/gbprod/doctrine-specification)
 
 This library allows you to write Doctrine ORM queries using the [specification pattern](http://en.wikipedia.org/wiki/Specification_pattern).
 
