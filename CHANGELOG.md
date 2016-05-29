@@ -9,3 +9,4 @@ Added
 - This Changelog
 - Use codecov instead of scrutinizer for coverage
 - VersionEye badge
+- Set scrutinizer codesniffer to PSR2
