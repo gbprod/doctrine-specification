@@ -1,8 +1,9 @@
 # Doctrine specification
 
 [![Build Status](https://travis-ci.org/gbprod/doctrine-specification.svg?branch=master)](https://travis-ci.org/gbprod/doctrine-specification)
-[![Code Coverage](https://scrutinizer-ci.com/g/gbprod/doctrine-specification/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/gbprod/doctrine-specification/?branch=master)
+[![codecov](https://codecov.io/gh/gbprod/doctrine-specification/branch/master/graph/badge.svg)](https://codecov.io/gh/gbprod/doctrine-specification)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/gbprod/doctrine-specification/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/gbprod/doctrine-specification/?branch=master)
+[![Dependency Status](https://www.versioneye.com/user/projects/574a9bc8ce8d0e004130d330/badge.svg?style=flat)](https://www.versioneye.com/user/projects/574a9bc8ce8d0e004130d330)
 
 [![Latest Stable Version](https://poser.pugx.org/gbprod/doctrine-specification/v/stable)](https://packagist.org/packages/gbprod/doctrine-specification)
 [![Total Downloads](https://poser.pugx.org/gbprod/doctrine-specification/downloads)](https://packagist.org/packages/gbprod/doctrine-specification)
