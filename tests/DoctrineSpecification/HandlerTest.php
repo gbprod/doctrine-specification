@@ -7,10 +7,10 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr\Base;
 use GBProd\DoctrineSpecification\Handler;
 use GBProd\DoctrineSpecification\Registry;
-use GBProd\DoctrineSpecification\ExpressionBuilder\AndXBuilder;
-use GBProd\DoctrineSpecification\ExpressionBuilder\Builder;
-use GBProd\DoctrineSpecification\ExpressionBuilder\NotBuilder;
-use GBProd\DoctrineSpecification\ExpressionBuilder\OrXBuilder;
+use GBProd\DoctrineSpecification\QueryFactory\AndXFactory;
+use GBProd\DoctrineSpecification\QueryFactory\Factory;
+use GBProd\DoctrineSpecification\QueryFactory\NotFactory;
+use GBProd\DoctrineSpecification\QueryFactory\OrXFactory;
 use GBProd\Specification\AndX;
 use GBProd\Specification\Not;
 use GBProd\Specification\OrX;
@@ -18,7 +18,7 @@ use GBProd\Specification\Specification;
 
 class HandlerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testConstructWillRegisterBaseBuilders()
+    public function testConstructWillRegisterBaseFactorys()
     {
         $registry = new Registry();
 
@@ -28,35 +28,35 @@ class HandlerTest extends \PHPUnit_Framework_TestCase
         $spec2 = $this->getMock(Specification::class);
 
         $this->assertInstanceOf(
-            AndXBuilder::class,
-            $registry->getBuilder(new AndX($spec1, $spec2))
+            AndXFactory::class,
+            $registry->getFactory(new AndX($spec1, $spec2))
         );
 
         $this->assertInstanceOf(
-            OrXBuilder::class,
-            $registry->getBuilder(new OrX($spec1, $spec2))
+            OrXFactory::class,
+            $registry->getFactory(new OrX($spec1, $spec2))
         );
 
         $this->assertInstanceOf(
-            NotBuilder::class,
-            $registry->getBuilder(new Not($spec1))
+            NotFactory::class,
+            $registry->getFactory(new Not($spec1))
         );
     }
 
-    public function testRegisterBuilderAddBuilderInRegistry()
+    public function testRegisterFactoryAddFactoryInRegistry()
     {
         $registry = new Registry();
 
         $handler = new Handler($registry);
 
-        $builder = $this->getMock(Builder::class);
+        $factory = $this->getMock(Factory::class);
         $spec = $this->getMock(Specification::class);
 
-        $handler->registerBuilder(get_class($spec), $builder);
+        $handler->registerFactory(get_class($spec), $factory);
 
         $this->assertEquals(
-            $builder,
-            $registry->getBuilder($spec)
+            $factory,
+            $registry->getFactory($spec)
         );
     }
 
@@ -64,9 +64,9 @@ class HandlerTest extends \PHPUnit_Framework_TestCase
     {
         $handler = new Handler(new Registry());
 
-        $builder = $this->getMock(Builder::class);
+        $factory = $this->getMock(Factory::class);
         $spec = $this->getMock(Specification::class);
-        $handler->registerBuilder(get_class($spec), $builder);
+        $handler->registerFactory(get_class($spec), $factory);
 
         $buildedExpr = $this->getMockForAbstractClass(Base::class);
 
@@ -75,9 +75,9 @@ class HandlerTest extends \PHPUnit_Framework_TestCase
 
         $qb = $this->createQueryBuilderBuildingQuery($query, $buildedExpr, $spec);
 
-        $builder
+        $factory
             ->expects($this->once())
-            ->method('build')
+            ->method('create')
             ->with($spec, $qb)
             ->willReturn($buildedExpr)
         ;

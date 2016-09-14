@@ -8,7 +8,6 @@ env:
     - DOCTRINE_VERSION=2.3.*
     - DOCTRINE_VERSION=2.4.*
     - DOCTRINE_VERSION=2.5.*
-    - DOCTRINE_VERSION=dev-master
 
 before_script:
     - composer self-update
