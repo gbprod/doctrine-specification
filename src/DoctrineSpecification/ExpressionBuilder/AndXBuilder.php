@@ -36,13 +36,9 @@ class AndXBuilder implements Builder
             throw new \InvalidArgumentException();
         }
 
-        $firstPartBuilder = $this->registry
-            ->getBuilder($spec->getFirstPart())
-        ;
+        $firstPartBuilder = $this->registry->getBuilder($spec->getFirstPart());
 
-        $secondPartBuilder = $this->registry
-            ->getBuilder($spec->getFirstPart())
-        ;
+        $secondPartBuilder = $this->registry->getBuilder($spec->getSecondPart());
 
         return $qb->expr()->andx(
             $firstPartBuilder->build($spec->getFirstPart(), $qb),
