@@ -22,25 +22,25 @@ class RegistryTest extends \PHPUnit_Framework_TestCase implements Specification
         return true;
     }
 
-    public function testGetBuilderThrowsOutOfRangeExceptionIfBuilderNotRegistred()
+    public function testGetFactoryThrowsOutOfRangeExceptionIfFactoryNotRegistred()
     {
         $registry = new Registry();
 
         $this->setExpectedException('\OutOfRangeException');
 
-        $registry->getBuilder($this);
+        $registry->getFactory($this);
     }
-    public function testGetBuilderReturnsAssociatedBuilder()
+    public function testGetFactoryReturnsAssociatedFactory()
     {
         $registry = new Registry();
 
-        $builder = $this->getMock('GBprod\DoctrineSpecification\ExpressionBuilder\Builder');
+        $factory = $this->getMock('GBprod\DoctrineSpecification\QueryFactory\Factory');
 
-        $registry->register(self::class, $builder);
+        $registry->register(self::class, $factory);
 
         $this->assertEquals(
-            $builder,
-            $registry->getBuilder($this)
+            $factory,
+            $registry->getFactory($this)
         );
     }
 }

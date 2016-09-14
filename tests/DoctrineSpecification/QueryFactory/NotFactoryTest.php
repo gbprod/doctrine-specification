@@ -6,17 +6,17 @@ use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\Query\Expr\Func as ExprNot;
 use Doctrine\ORM\QueryBuilder;
-use GBProd\DoctrineSpecification\ExpressionBuilder\Builder;
-use GBProd\DoctrineSpecification\ExpressionBuilder\NotBuilder;
+use GBProd\DoctrineSpecification\QueryFactory\Factory;
+use GBProd\DoctrineSpecification\QueryFactory\NotFactory;
 use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\Not;
 use GBProd\Specification\Specification;
 
-class NotBuilderTest extends \PHPUnit_Framework_TestCase
+class NotFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
-        new NotBuilder(new Registry());
+        new NotFactory(new Registry());
     }
 
     public function testBuildReturnsNotExpression()
@@ -26,12 +26,12 @@ class NotBuilderTest extends \PHPUnit_Framework_TestCase
         $registry = new Registry();
         $registry->register(
             get_class($not->getWrappedSpecification()),
-            $this->getMock(Builder::class)
+            $this->getMock(Factory::class)
         );
 
-        $builder = new NotBuilder($registry);
+        $factory = new NotFactory($registry);
 
-        $expr = $builder->build(
+        $expr = $factory->create(
             $not,
             $this->getQueryBuilder()
         );
@@ -60,11 +60,11 @@ class NotBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $spec = $this->getMock(Specification::class);
         $registry = new Registry();
-        $builder = new NotBuilder($registry);
+        $factory = new NotFactory($registry);
 
         $this->setExpectedException('\InvalidArgumentException');
 
-        $expr = $builder->build($spec, $this->getQueryBuilder());
+        $expr = $factory->create($spec, $this->getQueryBuilder());
     }
 
     public function testBuildReturnsOrxExpressionWithBuildedParts()
@@ -74,7 +74,7 @@ class NotBuilderTest extends \PHPUnit_Framework_TestCase
         $registry = new Registry();
         $registry->register(
             get_class($not->getWrappedSpecification()),
-            $this->getMock(Builder::class)
+            $this->getMock(Factory::class)
         );
 
         $qb = $this->getQueryBuilder();
@@ -82,16 +82,16 @@ class NotBuilderTest extends \PHPUnit_Framework_TestCase
         $exprFirstPart = new Comparison('4', '=', '4');
 
         $registry
-            ->getBuilder($not->getWrappedSpecification())
+            ->getFactory($not->getWrappedSpecification())
             ->expects($this->any())
-            ->method('build')
+            ->method('create')
             ->with($not->getWrappedSpecification(), $qb)
             ->willReturn($exprFirstPart)
         ;
 
-        $builder = new NotBuilder($registry);
+        $factory = new NotFactory($registry);
 
-        $expr = $builder->build($not, $qb);
+        $expr = $factory->create($not, $qb);
 
         $this->assertEquals($exprFirstPart, $expr->getArguments()[0]);
     }

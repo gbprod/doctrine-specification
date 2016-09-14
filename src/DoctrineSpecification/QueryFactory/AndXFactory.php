@@ -1,6 +1,6 @@
 <?php
 
-namespace GBProd\DoctrineSpecification\ExpressionBuilder;
+namespace GBProd\DoctrineSpecification\QueryFactory;
 
 use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\AndX;
@@ -8,11 +8,11 @@ use GBProd\Specification\Specification;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Expression Builder for AndX specification
+ * Factory for AndX specification
  *
  * @author gbprod <contact@gb-prod.fr>
  */
-class AndXBuilder implements Builder
+class AndXFactory implements Factory
 {
     /**
      * @var Registry
@@ -30,19 +30,18 @@ class AndXBuilder implements Builder
     /**
      * {inheritdoc}
      */
-    public function build(Specification $spec, QueryBuilder $qb)
+    public function create(Specification $spec, QueryBuilder $qb)
     {
         if (!$spec instanceof AndX) {
             throw new \InvalidArgumentException();
         }
 
-        $firstPartBuilder = $this->registry->getBuilder($spec->getFirstPart());
-
-        $secondPartBuilder = $this->registry->getBuilder($spec->getSecondPart());
+        $firstPartFactory = $this->registry->getFactory($spec->getFirstPart());
+        $secondPartFactory = $this->registry->getFactory($spec->getSecondPart());
 
         return $qb->expr()->andx(
-            $firstPartBuilder->build($spec->getFirstPart(), $qb),
-            $secondPartBuilder->build($spec->getSecondPart(), $qb)
+            $firstPartFactory->create($spec->getFirstPart(), $qb),
+            $secondPartFactory->create($spec->getSecondPart(), $qb)
         );
     }
 }

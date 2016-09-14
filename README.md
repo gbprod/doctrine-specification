@@ -19,15 +19,15 @@ You can write specifications using [gbprod/specification](https://github.com/gbp
 ### Creates a doctrine specification filter
 
 ```php
-namespace GBProd\Acme\Doctrine\SpecificationBuilder;
+namespace GBProd\Acme\Doctrine\SpecificationFactory;
 
-use GBProd\DoctrineSpecification\ExpressionBuilder\Builder;
+use GBProd\DoctrineSpecification\QueryFactory\Factory;
 use GBProd\Specification\Specification;
 use Doctrine\ORM\QueryBuilder;
 
-class IsAvailableBuilder implements Builder
+class IsAvailableFactory implements Factory
 {
-    public function build(Specification $spec, QueryBuilder $qb)
+    public function build(Specification $spec, QueryFactory $qb)
     {
         return $qb->expr()
             ->andx(
@@ -45,8 +45,8 @@ class IsAvailableBuilder implements Builder
 $registry = new GBProd\DoctrineSpecification\Registry();
 
 $handler = new GBProd\DoctrineSpecification\Handler($registry);
-$handler->registerBuilder(IsAvailable::class, new IsAvailableBuilder());
-$handler->registerBuilder(StockGreaterThan::class, new StockGreaterThanBuilder());
+$handler->registerFactory(IsAvailable::class, new IsAvailableFactory());
+$handler->registerFactory(StockGreaterThan::class, new StockGreaterThanFactory());
 ```
 
 ### Use it

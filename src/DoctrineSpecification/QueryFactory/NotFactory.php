@@ -1,6 +1,6 @@
 <?php
 
-namespace GBProd\DoctrineSpecification\ExpressionBuilder;
+namespace GBProd\DoctrineSpecification\QueryFactory;
 
 use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\Not;
@@ -8,11 +8,11 @@ use GBProd\Specification\Specification;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Expression Builder for Not specification
+ * Factory for Not specification
  *
  * @author gbprod <contact@gb-prod.fr>
  */
-class NotBuilder implements Builder
+class NotFactory implements Factory
 {
     /**
      * @var Registry
@@ -30,16 +30,16 @@ class NotBuilder implements Builder
     /**
      * {inheritdoc}
      */
-    public function build(Specification $spec, QueryBuilder $qb)
+    public function create(Specification $spec, QueryBuilder $qb)
     {
         if (!$spec instanceof Not) {
             throw new \InvalidArgumentException();
         }
 
-        $builder = $this->registry->getBuilder($spec->getWrappedSpecification());
+        $factory = $this->registry->getFactory($spec->getWrappedSpecification());
 
         return $qb->expr()->not(
-            $builder->build($spec->getWrappedSpecification(), $qb)
+            $factory->create($spec->getWrappedSpecification(), $qb)
         );
     }
 }

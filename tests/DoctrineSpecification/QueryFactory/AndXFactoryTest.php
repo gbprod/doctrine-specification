@@ -6,17 +6,17 @@ use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Andx as ExprAndx;
 use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\QueryBuilder;
-use GBProd\DoctrineSpecification\ExpressionBuilder\AndXBuilder;
-use GBProd\DoctrineSpecification\ExpressionBuilder\Builder;
+use GBProd\DoctrineSpecification\QueryFactory\AndXFactory;
+use GBProd\DoctrineSpecification\QueryFactory\Factory;
 use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\AndX;
 use GBProd\Specification\Specification;
 
-class AndXBuilderTest extends \PHPUnit_Framework_TestCase
+class AndXFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
-        new AndXBuilder(new Registry());
+        new AndXFactory(new Registry());
     }
 
     public function testBuildReturnsAndxExpression()
@@ -24,9 +24,9 @@ class AndXBuilderTest extends \PHPUnit_Framework_TestCase
         $andx = $this->createAndX();
         $registry = $this->createRegistryForAndX($andx);
 
-        $builder = new AndXBuilder($registry);
+        $factory = new AndXFactory($registry);
 
-        $expr = $builder->build($andx, $this->getQueryBuilder());
+        $expr = $factory->create($andx, $this->getQueryBuilder());
 
         $this->assertInstanceOf(ExprAndx::class, $expr);
     }
@@ -34,8 +34,8 @@ class AndXBuilderTest extends \PHPUnit_Framework_TestCase
     private function createAndX()
     {
         return new AndX(
-            $this->getMock(Specification::class),
-            $this->getMock(Specification::class)
+            $this->prophesize(Specification::class)->reveal(),
+            $this->prophesize(Specification::class)->reveal()
         );
     }
 
@@ -45,12 +45,12 @@ class AndXBuilderTest extends \PHPUnit_Framework_TestCase
 
         $registry->register(
             get_class($andx->getFirstPart()),
-            $this->getMock(Builder::class)
+            $this->prophesize(Factory::class)->reveal()
         );
 
         $registry->register(
             get_class($andx->getSecondPart()),
-            $this->getMock(Builder::class)
+            $this->prophesize(Factory::class)->reveal()
         );
 
         return $registry;
@@ -76,41 +76,48 @@ class AndXBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $spec = $this->getMock(Specification::class);
         $registry = new Registry();
-        $builder = new AndXBuilder($registry);
+        $factory = new AndXFactory($registry);
 
         $this->setExpectedException('\InvalidArgumentException');
 
-        $expr = $builder->build($spec, $this->getQueryBuilder());
+        $expr = $factory->create($spec, $this->getQueryBuilder());
     }
 
     public function testBuildReturnsAndxExpressionWithBuildedParts()
     {
         $andx = $this->createAndX();
-        $registry = $this->createRegistryForAndX($andx);
+        $registry = new Registry();
         $qb = $this->getQueryBuilder();
 
         $exprFirstPart = new Comparison('4', '=', '4');
-        $exprSecondPart = new Comparison('4', '=', '4');
+        $exprSecondPart = new Comparison('4', '=', '3');
 
-        $registry
-            ->getBuilder($andx->getFirstPart())
-            ->expects($this->any())
-            ->method('build')
-            ->with($andx->getFirstPart(), $qb)
+        $factoryFirstPart = $this->prophesize(Factory::class);
+        $factorySecondPart = $this->prophesize(Factory::class);
+
+        $registry->register(
+            get_class($andx->getFirstPart()),
+            $factoryFirstPart->reveal()
+        );
+
+        $registry->register(
+            get_class($andx->getSecondPart()),
+            $factorySecondPart->reveal()
+        );
+
+        $factoryFirstPart
+            ->create($andx->getFirstPart(), $qb)
             ->willReturn($exprFirstPart)
         ;
 
-        $registry
-            ->getBuilder($andx->getSecondPart())
-            ->expects($this->any())
-            ->method('build')
-            ->with($andx->getSecondPart(), $qb)
+        $factorySecondPart
+            ->create($andx->getSecondPart(), $qb)
             ->willReturn($exprSecondPart)
         ;
 
-        $builder = new AndXBuilder($registry);
+        $factory = new AndXFactory($registry);
 
-        $expr = $builder->build($andx, $qb);
+        $expr = $factory->create($andx, $qb);
 
         $this->assertEquals($exprFirstPart, $expr->getParts()[0]);
         $this->assertEquals($exprSecondPart, $expr->getParts()[1]);

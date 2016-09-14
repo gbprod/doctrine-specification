@@ -2,8 +2,8 @@
 
 namespace Tests\GBProd\DoctrineSpecification;
 
-use GBProd\DoctrineSpecification\ExpressionBuilder\OrXBuilder;
-use GBProd\DoctrineSpecification\ExpressionBuilder\Builder;
+use GBProd\DoctrineSpecification\QueryFactory\OrXFactory;
+use GBProd\DoctrineSpecification\QueryFactory\Factory;
 use GBProd\DoctrineSpecification\Registry;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr\OrX as ExprOrX;
@@ -12,11 +12,11 @@ use Doctrine\ORM\Query\Expr;
 use GBProd\Specification\OrX;
 use GBProd\Specification\Specification;
 
-class OrXBuilderTest extends \PHPUnit_Framework_TestCase
+class OrXFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
-        new OrXBuilder(new Registry());
+        new OrXFactory(new Registry());
     }
 
     public function testBuildReturnsOrxExpression()
@@ -24,11 +24,11 @@ class OrXBuilderTest extends \PHPUnit_Framework_TestCase
         $orx = $this->createOrX();
         $registry = $this->createRegistryForOrX($orx);
 
-        $builder = new OrXBuilder($registry);
+        $factory = new OrXFactory($registry);
 
-        $expr = $builder->build(
+        $expr = $factory->create(
             $orx,
-            $this->getQueryBuilder()
+            $this->getQueryFactory()
         );
 
         $this->assertInstanceOf(ExprOrX::class, $expr);
@@ -37,8 +37,8 @@ class OrXBuilderTest extends \PHPUnit_Framework_TestCase
     private function createOrX()
     {
         return new OrX(
-            $this->getMock(Specification::class),
-            $this->getMock(Specification::class)
+            $this->prophesize(Specification::class)->reveal(),
+            $this->prophesize(Specification::class)->reveal()
         );
     }
 
@@ -48,18 +48,18 @@ class OrXBuilderTest extends \PHPUnit_Framework_TestCase
 
         $registry->register(
             get_class($orx->getFirstPart()),
-            $this->getMock(Builder::class)
+            $this->getMock(Factory::class)
         );
 
         $registry->register(
             get_class($orx->getSecondPart()),
-            $this->getMock(Builder::class)
+            $this->getMock(Factory::class)
         );
 
         return $registry;
     }
 
-    private function getQueryBuilder()
+    private function getQueryFactory()
     {
         $qb = $this
             ->getMockBuilder(QueryBuilder::class)
@@ -80,41 +80,50 @@ class OrXBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $spec = $this->getMock(Specification::class);
         $registry = new Registry();
-        $builder = new OrXBuilder($registry);
+        $factory = new OrXFactory($registry);
 
         $this->setExpectedException('\InvalidArgumentException');
 
-        $expr = $builder->build($spec, $this->getQueryBuilder());
+        $expr = $factory->create($spec, $this->getQueryFactory());
     }
 
     public function testBuildReturnsOrxExpressionWithBuildedParts()
     {
         $orx = $this->createOrX();
-        $registry = $this->createRegistryForOrX($orx);
-        $qb = $this->getQueryBuilder();
+
+        $registry = new Registry();
+
+        $factoryFirstPart = $this->prophesize(Factory::class);
+        $factorySecondPart = $this->prophesize(Factory::class);
+
+        $registry->register(
+            get_class($orx->getFirstPart()),
+            $factoryFirstPart->reveal()
+        );
+
+        $registry->register(
+            get_class($orx->getSecondPart()),
+            $factorySecondPart->reveal()
+        );
+
+        $qb = $this->getQueryFactory();
 
         $exprFirstPart = new Comparison('4', '=', '4');
-        $exprSecondPart = new Comparison('4', '=', '4');
+        $exprSecondPart = new Comparison('4', '=', '3');
 
-        $registry
-            ->getBuilder($orx->getFirstPart())
-            ->expects($this->any())
-            ->method('build')
-            ->with($orx->getFirstPart(), $qb)
+        $factoryFirstPart
+            ->create($orx->getFirstPart(), $qb)
             ->willReturn($exprFirstPart)
         ;
 
-        $registry
-            ->getBuilder($orx->getSecondPart())
-            ->expects($this->any())
-            ->method('build')
-            ->with($orx->getSecondPart(), $qb)
+        $factorySecondPart
+            ->create($orx->getSecondPart(), $qb)
             ->willReturn($exprSecondPart)
         ;
 
-        $builder = new OrXBuilder($registry);
+        $factory = new OrXFactory($registry);
 
-        $expr = $builder->build($orx, $qb);
+        $expr = $factory->create($orx, $qb);
 
         $this->assertEquals($exprFirstPart, $expr->getParts()[0]);
         $this->assertEquals($exprSecondPart, $expr->getParts()[1]);

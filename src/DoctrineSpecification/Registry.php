@@ -2,50 +2,50 @@
 
 namespace GBProd\DoctrineSpecification;
 
-use GBProd\DoctrineSpecification\ExpressionBuilder\Builder;
+use GBProd\DoctrineSpecification\QueryFactory\Factory;
 use GBProd\Specification\Specification;
 
 /**
- * Registry class for Expression builders
+ * Registry class for Factories
  *
  * @author gbprod <contact@gb-prod.fr>
  */
 class Registry
 {
     /**
-     * @var array<Builder>
+     * @var array<Factory>
      */
-    private $builders = array();
+    private $factories = array();
 
     /**
-     * Register a builder
+     * Register a factory
      *
      * @param string classname Fully qualified classname of the handled specification
-     * @param Builder $builder
+     * @param Factory $factory
      */
-    public function register($classname, Builder $builder)
+    public function register($classname, Factory $factory)
     {
-        $this->builders[$classname] = $builder;
+        $this->factories[$classname] = $factory;
     }
 
     /**
-     * Get registred builder for Specification
+     * Get registred factory for Specification
      *
      * @param Specification $spec
      *
-     * @return Builder
+     * @return Factory
      *
-     * @throw OutOfRangeException if builder not found
+     * @throw OutOfRangeException if Factory not found
      */
-    public function getBuilder(Specification $spec)
+    public function getFactory(Specification $spec)
     {
-        if(!isset($this->builders[get_class($spec)])) {
+        if(!isset($this->factories[get_class($spec)])) {
             throw new \OutOfRangeException(sprintf(
-                'Builder for Specification "%s" not registred',
+                'Factory for Specification "%s" not registred',
                 get_class($spec)
             ));
         }
 
-        return $this->builders[get_class($spec)];
+        return $this->factories[get_class($spec)];
     }
 }
