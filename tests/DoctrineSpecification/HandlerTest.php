@@ -5,12 +5,13 @@ namespace Tests\GBProd\DoctrineSpecification;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr\Base;
+use Doctrine\ORM\Query\Expr\Comparison;
 use GBProd\DoctrineSpecification\Handler;
-use GBProd\DoctrineSpecification\Registry;
 use GBProd\DoctrineSpecification\QueryFactory\AndXFactory;
 use GBProd\DoctrineSpecification\QueryFactory\Factory;
 use GBProd\DoctrineSpecification\QueryFactory\NotFactory;
 use GBProd\DoctrineSpecification\QueryFactory\OrXFactory;
+use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\AndX;
 use GBProd\Specification\Not;
 use GBProd\Specification\OrX;
@@ -18,113 +19,63 @@ use GBProd\Specification\Specification;
 
 class HandlerTest extends \PHPUnit_Framework_TestCase
 {
+    private $registry;
+
+    private $qb;
+
+    private $handler;
+
+    public function setUp()
+    {
+        $this->registry = new Registry();
+        $this->qb = $this->prophesize(QueryBuilder::class)->reveal();
+
+        $this->handler = new Handler($this->registry, $this->qb);
+    }
     public function testConstructWillRegisterBaseFactorys()
     {
-        $registry = new Registry();
-
-        new Handler($registry);
-
         $spec1 = $this->getMock(Specification::class);
         $spec2 = $this->getMock(Specification::class);
 
         $this->assertInstanceOf(
             AndXFactory::class,
-            $registry->getFactory(new AndX($spec1, $spec2))
+            $this->registry->getFactory(new AndX($spec1, $spec2))
         );
 
         $this->assertInstanceOf(
             OrXFactory::class,
-            $registry->getFactory(new OrX($spec1, $spec2))
+            $this->registry->getFactory(new OrX($spec1, $spec2))
         );
 
         $this->assertInstanceOf(
             NotFactory::class,
-            $registry->getFactory(new Not($spec1))
+            $this->registry->getFactory(new Not($spec1))
         );
     }
 
-    public function testRegisterFactoryAddFactoryInRegistry()
+    public function testRegisterWillAddFactoryToRegistry()
     {
-        $registry = new Registry();
+        $factory = $this->prophesize(Factory::class)->reveal();
+        $spec = $this->prophesize(Specification::class)->reveal();
 
-        $handler = new Handler($registry);
+        $this->handler->registerFactory(get_class($spec), $factory);
 
-        $factory = $this->getMock(Factory::class);
-        $spec = $this->getMock(Specification::class);
-
-        $handler->registerFactory(get_class($spec), $factory);
-
-        $this->assertEquals(
-            $factory,
-            $registry->getFactory($spec)
-        );
+        $this->assertEquals($factory, $this->registry->getFactory($spec));
     }
 
-    public function testHandle()
+
+    public function testHandleReturnsQuery()
     {
-        $handler = new Handler(new Registry());
+        $factory = $this->prophesize(Factory::class);
+        $spec = $this->prophesize(Specification::class)->reveal();
 
-        $factory = $this->getMock(Factory::class);
-        $spec = $this->getMock(Specification::class);
-        $handler->registerFactory(get_class($spec), $factory);
-
-        $buildedExpr = $this->getMockForAbstractClass(Base::class);
-
-        $result = array(new \stdClass(), new \stdClass(), new \stdClass());
-        $query = $this->createQueryWithResult($result);
-
-        $qb = $this->createQueryBuilderBuildingQuery($query, $buildedExpr, $spec);
+        $this->handler->registerFactory(get_class($spec), $factory->reveal());
 
         $factory
-            ->expects($this->once())
-            ->method('create')
-            ->with($spec, $qb)
-            ->willReturn($buildedExpr)
+            ->create($spec, $this->qb)
+            ->willReturn(new Comparison('42', '=', '42'))
         ;
 
-        $this->assertEquals(
-            $result,
-            $handler->handle($spec, $qb)
-        );
-    }
-
-    private function createQueryWithResult($result)
-    {
-        $query = $this
-            ->getMockBuilder(AbstractQuery::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-
-        $query
-            ->expects($this->once())
-            ->method('getResult')
-            ->willReturn($result)
-        ;
-
-        return $query;
-    }
-
-    private function createQueryBuilderBuildingQuery($query, $buildedExpr, $spec)
-    {
-        $qb = $this
-            ->getMockBuilder(QueryBuilder::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-
-        $qb
-            ->expects($this->at(0))
-            ->method('where')
-            ->with($buildedExpr)
-        ;
-
-        $qb
-            ->expects($this->at(1))
-            ->method('getQuery')
-            ->willReturn($query)
-        ;
-
-        return $qb;
+        $this->assertEquals(new Comparison('42', '=', '42'), $this->handler->handle($spec));
     }
 }

@@ -3,6 +3,7 @@
 namespace GBProd\DoctrineSpecification;
 
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query\Expr\Base;
 use GBProd\DoctrineSpecification\QueryFactory\AndXFactory;
 use GBProd\DoctrineSpecification\QueryFactory\Factory;
 use GBProd\DoctrineSpecification\QueryFactory\NotFactory;
@@ -20,16 +21,23 @@ use GBProd\Specification\Specification;
 class Handler
 {
     /**
-     * @param Registry
+     * @var Registry
      */
     private $registry;
 
     /**
-     * @param Registry $registry
+     * @var QueryBuilder
      */
-    public function __construct(Registry $registry)
+    private $qb;
+
+    /**
+     * @param Registry     $registry
+     * @param QueryBuilder $qb
+     */
+    public function __construct(Registry $registry, QueryBuilder $qb)
     {
         $this->registry = $registry;
+        $this->qb       = $qb;
 
         $this->registry->register(AndX::class, new AndXFactory($registry));
         $this->registry->register(OrX::class, new OrXFactory($registry));
@@ -40,17 +48,14 @@ class Handler
      * handle specification for queryfactory
      *
      * @param Specification $spec
-     * @param QueryBuilder  $qb
      *
-     * @return array
+     * @return Base
      */
-    public function handle(Specification $spec, QueryBuilder $qb)
+    public function handle(Specification $spec)
     {
         $factory = $this->registry->getFactory($spec);
 
-        $qb->where($factory->create($spec, $qb));
-
-        return $qb->getQuery()->getResult();
+        return $factory->create($spec, $this->qb);
     }
 
     /**

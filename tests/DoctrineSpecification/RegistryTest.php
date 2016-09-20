@@ -30,6 +30,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase implements Specification
 
         $registry->getFactory($this);
     }
+
     public function testGetFactoryReturnsAssociatedFactory()
     {
         $registry = new Registry();
