@@ -27,7 +27,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class IsAvailableFactory implements Factory
 {
-    public function build(Specification $spec, QueryFactory $qb)
+    public function create(Specification $spec, QueryFactory $qb)
     {
         return $qb->expr()
             ->andx(
@@ -44,21 +44,27 @@ class IsAvailableFactory implements Factory
 ```php
 $registry = new GBProd\DoctrineSpecification\Registry();
 
-$handler = new GBProd\DoctrineSpecification\Handler($registry);
-$handler->registerFactory(IsAvailable::class, new IsAvailableFactory());
-$handler->registerFactory(StockGreaterThan::class, new StockGreaterThanFactory());
+$handler = new GBProd\DoctrineSpecification\Handler(
+    $registry, 
+    $this->em->createQueryBuilder()
+);
+
+$handler->registerFactory(
+    IsAvailable::class, 
+    new IsAvailableFactory()
+);
+
+$handler->registerFactory(
+    StockGreaterThan::class, 
+    new StockGreaterThanFactory()
+);
 ```
 
 ### Use it
 
 ```php
-$available = new IsAvailable();
-$hightStock = new StockGreaterThan(4);
-
-$availableWithLowStock = $available
-    ->andX(
-        $hightStock->not()
-    )
+$availableWithLowStock = (new IsAvailable())
+    ->andX((new StockGreaterThan(4))->not())
 ;
 
 $qb = $this->em
@@ -66,7 +72,11 @@ $qb = $this->em
     ->createQueryBuilder('p')
 ;
 
-$result = $handler->handle($availableWithLowStock, $qb)
+$qb->where(
+    $handler->handle($availableWithLowStock)
+);
+
+return $qb->getQuery()->getResult();
 ```
 
 ## Requirements
