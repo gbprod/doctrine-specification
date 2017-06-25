@@ -32,10 +32,11 @@ class HandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->handler = new Handler($this->registry, $this->qb);
     }
+
     public function testConstructWillRegisterBaseFactorys()
     {
-        $spec1 = $this->getMock(Specification::class);
-        $spec2 = $this->getMock(Specification::class);
+        $spec1 = $this->createMock(Specification::class);
+        $spec2 = $this->createMock(Specification::class);
 
         $this->assertInstanceOf(
             AndXFactory::class,

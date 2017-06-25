@@ -16,7 +16,9 @@ class AndXFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
-        new AndXFactory(new Registry());
+        $factory = new AndXFactory(new Registry());
+
+        $this->assertInstanceOf(AndXFactory::class, $factory);
     }
 
     public function testBuildReturnsAndxExpression()
@@ -74,7 +76,7 @@ class AndXFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildThrowExceptionIfNotAndXSpecification()
     {
-        $spec = $this->getMock(Specification::class);
+        $spec = $this->createMock(Specification::class);
         $registry = new Registry();
         $factory = new AndXFactory($registry);
 
