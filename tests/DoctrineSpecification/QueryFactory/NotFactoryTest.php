@@ -16,17 +16,19 @@ class NotFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
-        new NotFactory(new Registry());
+        $factory = new NotFactory(new Registry());
+
+        $this->assertInstanceOf(NotFactory::class, $factory);
     }
 
     public function testBuildReturnsNotExpression()
     {
-        $not = new Not($this->getMock(Specification::class));
+        $not = new Not($this->createMock(Specification::class));
 
         $registry = new Registry();
         $registry->register(
             get_class($not->getWrappedSpecification()),
-            $this->getMock(Factory::class)
+            $this->createMock(Factory::class)
         );
 
         $factory = new NotFactory($registry);
@@ -58,23 +60,23 @@ class NotFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildThrowExceptionIfNotNotSpecification()
     {
-        $spec = $this->getMock(Specification::class);
+        $spec = $this->createMock(Specification::class);
         $registry = new Registry();
         $factory = new NotFactory($registry);
 
-        $this->setExpectedException('\InvalidArgumentException');
+        $this->setExpectedException(\InvalidArgumentException::class);
 
         $expr = $factory->create($spec, $this->getQueryBuilder());
     }
 
     public function testBuildReturnsOrxExpressionWithBuildedParts()
     {
-        $not = new Not($this->getMock(Specification::class));
+        $not = new Not($this->createMock(Specification::class));
 
         $registry = new Registry();
         $registry->register(
             get_class($not->getWrappedSpecification()),
-            $this->getMock(Factory::class)
+            $this->createMock(Factory::class)
         );
 
         $qb = $this->getQueryBuilder();

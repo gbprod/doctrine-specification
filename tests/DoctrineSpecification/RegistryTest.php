@@ -2,6 +2,7 @@
 
 namespace Tests\GBProd\DoctrineSpecification;
 
+use GBProd\DoctrineSpecification\QueryFactory\Factory;
 use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\Specification;
 
@@ -26,7 +27,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase implements Specification
     {
         $registry = new Registry();
 
-        $this->setExpectedException('\OutOfRangeException');
+        $this->setExpectedException(\OutOfRangeException::class);
 
         $registry->getFactory($this);
     }
@@ -35,7 +36,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase implements Specification
     {
         $registry = new Registry();
 
-        $factory = $this->getMock('GBprod\DoctrineSpecification\QueryFactory\Factory');
+        $factory = $this->createMock(Factory::class);
 
         $registry->register(self::class, $factory);
 

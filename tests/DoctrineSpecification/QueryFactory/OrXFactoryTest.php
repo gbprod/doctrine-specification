@@ -16,7 +16,9 @@ class OrXFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
-        new OrXFactory(new Registry());
+        $factory = new OrXFactory(new Registry());
+
+        $this->assertInstanceOf(OrXFactory::class, $factory);
     }
 
     public function testBuildReturnsOrxExpression()
@@ -48,12 +50,12 @@ class OrXFactoryTest extends \PHPUnit_Framework_TestCase
 
         $registry->register(
             get_class($orx->getFirstPart()),
-            $this->getMock(Factory::class)
+            $this->createMock(Factory::class)
         );
 
         $registry->register(
             get_class($orx->getSecondPart()),
-            $this->getMock(Factory::class)
+            $this->createMock(Factory::class)
         );
 
         return $registry;
@@ -78,11 +80,11 @@ class OrXFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildThrowExceptionIfNotOrXSpecification()
     {
-        $spec = $this->getMock(Specification::class);
+        $spec = $this->createMock(Specification::class);
         $registry = new Registry();
         $factory = new OrXFactory($registry);
 
-        $this->setExpectedException('\InvalidArgumentException');
+        $this->setExpectedException(\InvalidArgumentException::class);
 
         $expr = $factory->create($spec, $this->getQueryFactory());
     }
