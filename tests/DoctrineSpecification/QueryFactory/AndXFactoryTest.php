@@ -2,17 +2,18 @@
 
 namespace Tests\GBProd\DoctrineSpecification;
 
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Andx as ExprAndx;
 use Doctrine\ORM\Query\Expr\Comparison;
-use Doctrine\ORM\QueryBuilder;
 use GBProd\DoctrineSpecification\QueryFactory\AndXFactory;
 use GBProd\DoctrineSpecification\QueryFactory\Factory;
 use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\AndX;
 use GBProd\Specification\Specification;
+use PHPUnit\Framework\TestCase;
 
-class AndXFactoryTest extends \PHPUnit_Framework_TestCase
+class AndXFactoryTest extends TestCase
 {
     public function testConstruct()
     {
@@ -80,7 +81,7 @@ class AndXFactoryTest extends \PHPUnit_Framework_TestCase
         $registry = new Registry();
         $factory = new AndXFactory($registry);
 
-        $this->setExpectedException('\InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
 
         $expr = $factory->create($spec, $this->getQueryBuilder());
     }

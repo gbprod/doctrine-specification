@@ -5,17 +5,20 @@ namespace Tests\GBProd\DoctrineSpecification;
 use GBProd\DoctrineSpecification\QueryFactory\Factory;
 use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\Specification;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests for registry
  *
  * @author gbprod <contact@gb-prod.fr>
  */
-class RegistryTest extends \PHPUnit_Framework_TestCase implements Specification
+class RegistryTest extends TestCase implements Specification
 {
     public function testConstruct()
     {
-        new Registry();
+        $registry = new Registry();
+
+        $this->assertInstanceOf(Registry::class, $registry);
     }
 
     public function isSatisfiedBy($candidate)
@@ -27,7 +30,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase implements Specification
     {
         $registry = new Registry();
 
-        $this->setExpectedException(\OutOfRangeException::class);
+        $this->expectException(\OutOfRangeException::class);
 
         $registry->getFactory($this);
     }

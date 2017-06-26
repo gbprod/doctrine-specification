@@ -2,17 +2,18 @@
 
 namespace Tests\GBProd\DoctrineSpecification;
 
-use GBProd\DoctrineSpecification\QueryFactory\OrXFactory;
-use GBProd\DoctrineSpecification\QueryFactory\Factory;
-use GBProd\DoctrineSpecification\Registry;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Query\Expr\OrX as ExprOrX;
-use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\Query\Expr\Comparison;
+use Doctrine\ORM\Query\Expr\OrX as ExprOrX;
+use GBProd\DoctrineSpecification\QueryFactory\Factory;
+use GBProd\DoctrineSpecification\QueryFactory\OrXFactory;
+use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\OrX;
 use GBProd\Specification\Specification;
+use PHPUnit\Framework\TestCase;
 
-class OrXFactoryTest extends \PHPUnit_Framework_TestCase
+class OrXFactoryTest extends TestCase
 {
     public function testConstruct()
     {
@@ -84,7 +85,7 @@ class OrXFactoryTest extends \PHPUnit_Framework_TestCase
         $registry = new Registry();
         $factory = new OrXFactory($registry);
 
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $expr = $factory->create($spec, $this->getQueryFactory());
     }

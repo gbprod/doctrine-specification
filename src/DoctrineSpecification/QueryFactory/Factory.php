@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GBProd\DoctrineSpecification\QueryFactory;
 
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Query\Expr\Base;
 use GBProd\Specification\Specification;
 
 /**

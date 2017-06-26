@@ -2,17 +2,18 @@
 
 namespace Tests\GBProd\DoctrineSpecification;
 
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\Query\Expr\Func as ExprNot;
-use Doctrine\ORM\QueryBuilder;
 use GBProd\DoctrineSpecification\QueryFactory\Factory;
 use GBProd\DoctrineSpecification\QueryFactory\NotFactory;
 use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\Not;
 use GBProd\Specification\Specification;
+use PHPUnit\Framework\TestCase;
 
-class NotFactoryTest extends \PHPUnit_Framework_TestCase
+class NotFactoryTest extends TestCase
 {
     public function testConstruct()
     {
@@ -64,7 +65,7 @@ class NotFactoryTest extends \PHPUnit_Framework_TestCase
         $registry = new Registry();
         $factory = new NotFactory($registry);
 
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $expr = $factory->create($spec, $this->getQueryBuilder());
     }
