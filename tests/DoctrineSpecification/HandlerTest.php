@@ -16,8 +16,9 @@ use GBProd\Specification\AndX;
 use GBProd\Specification\Not;
 use GBProd\Specification\OrX;
 use GBProd\Specification\Specification;
+use PHPUnit\Framework\TestCase;
 
-class HandlerTest extends \PHPUnit_Framework_TestCase
+class HandlerTest extends TestCase
 {
     private $registry;
 

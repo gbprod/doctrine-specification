@@ -45,17 +45,17 @@ class IsAvailableFactory implements Factory
 $registry = new GBProd\DoctrineSpecification\Registry();
 
 $handler = new GBProd\DoctrineSpecification\Handler(
-    $registry, 
+    $registry,
     $this->em->createQueryBuilder()
 );
 
 $handler->registerFactory(
-    IsAvailable::class, 
+    IsAvailable::class,
     new IsAvailableFactory()
 );
 
 $handler->registerFactory(
-    StockGreaterThan::class, 
+    StockGreaterThan::class,
     new StockGreaterThanFactory()
 );
 ```
@@ -81,7 +81,7 @@ return $qb->getQuery()->getResult();
 
 ## Requirements
 
- * PHP 5.5+
+ * PHP 7.0+
 
 ## Installation
 

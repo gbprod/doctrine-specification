@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GBProd\DoctrineSpecification\QueryFactory;
 
+use Doctrine\ORM\QueryBuilder;
 use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\AndX;
 use GBProd\Specification\Specification;
-use Doctrine\ORM\QueryBuilder;
 
 /**
  * Factory for AndX specification
@@ -39,7 +41,7 @@ class AndXFactory implements Factory
         $firstPartFactory = $this->registry->getFactory($spec->getFirstPart());
         $secondPartFactory = $this->registry->getFactory($spec->getSecondPart());
 
-        return $qb->expr()->andx(
+        return $qb->expr()->andX(
             $firstPartFactory->create($spec->getFirstPart(), $qb),
             $secondPartFactory->create($spec->getSecondPart(), $qb)
         );

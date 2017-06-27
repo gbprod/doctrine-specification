@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GBProd\DoctrineSpecification\QueryFactory;
 
+use Doctrine\ORM\QueryBuilder;
 use GBProd\DoctrineSpecification\Registry;
 use GBProd\Specification\OrX;
 use GBProd\Specification\Specification;
-use Doctrine\ORM\QueryBuilder;
 
 /**
  * Factory for OrX specification
