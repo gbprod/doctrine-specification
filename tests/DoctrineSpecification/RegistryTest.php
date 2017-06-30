@@ -21,7 +21,7 @@ class RegistryTest extends TestCase implements Specification
         $this->assertInstanceOf(Registry::class, $registry);
     }
 
-    public function isSatisfiedBy($candidate)
+    public function isSatisfiedBy($candidate): bool
     {
         return true;
     }
