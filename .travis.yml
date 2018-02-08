@@ -2,9 +2,16 @@ language: php
 php:
     - '7.0'
     - '7.1'
+    - '7.2'
 
 env:
     - DOCTRINE_VERSION=2.5.*
+    - DOCTRINE_VERSION=2.6.*
+
+matrix:
+  exclude:
+    - php: '7.0'
+      env: DOCTRINE_VERSION=2.6.*
 
 before_script:
     - composer self-update
