@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/gbprod/doctrine-specification/compare/v2.1.0...HEAD)
 
+ - changing licence
+
 ## [v2.1.0](https://github.com/gbprod/doctrine-specification/compare/v2.0.0...v2.1.0)
 
  - Upgrade deps
